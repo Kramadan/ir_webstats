@@ -286,11 +286,11 @@ class iRWebStats:
             r = self.__req(ct.URL_DRIVER_STATS, data=data,
                            cookie=self.last_cookie)
             res = parse(r)
-            total_results = res['d']['32']
-
+            total_results = res['d']['20']
+            
             header = res['m']
             f = res['d']['r'][0]
-            if int(f['29']) == int(self.custid):  # 29 is custid
+            if int(f['34']) == int(self.custid):  #34 is custid
                 drivers = res['d']['r'][1:]
             else:
                 drivers = res['d']['r']
