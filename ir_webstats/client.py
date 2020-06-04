@@ -306,47 +306,32 @@ class iRWebStats:
         return a, b, c
 
     @logged_in
-    def results_archive(self, custid=None, race_type=ct.RACE_TYPE_ROAD,
-                        event_types=ct.ALL, official=ct.ALL,
-                        license_level=ct.ALL, car=ct.ALL, track=ct.ALL,
-                        series=ct.ALL, season=(2014, 1, ct.ALL),
-                        date_range=ct.ALL, page=1, sort=ct.SORT_TIME,
-                        order= ct.ORDER_DESC):
+    def results_archive(
+        self,
+        custid=None, 
+        event_types=ct.ALL,
+        category_type=ct.ALL,
+        series=ct.ALL, season=(2020, 1, ct.ALL),
+        date_range=ct.ALL):
         """ Search race results using various fields. Returns a tuple 
-            (results, total_results) so if you want all results you should 
-            request different pages (using page). Each page has 25 
-            (ct.NUM_ENTRIES) results max."""
+            (header, results, total_results) """
 
         format_ = 'json'
-        lowerbound = ct.NUM_ENTRIES * (page - 1) + 1
-        upperbound = lowerbound + ct.NUM_ENTRIES - 1
-        #  TODO carclassid, seriesid in constants
-        data = {'format': format_, 'custid': custid, 'seriesid': series,
-                'carid': car, 'trackid': track, 'lowerbound': lowerbound,
-                'upperbound': upperbound, 'sort': sort, 'order': order,
-                'category': race_type, 'showtts': 0, 'showraces': 0,
-                'showquals': 0, 'showops': 0, 'showofficial': 0,
-                'showunofficial': 0, 'showrookie': 0, 'showclassa': 0,
-                'showclassb': 0, 'showclassc': 0, 'showclassd': 0,
-                'showpro': 0, 'showprowc': 0, }
+        
+        data = {'format': format_, 'custid': custid,
+                #'starttime_low': lowerbound, 'starttime_high': upperbound,
+                'catid': category_type, 'evttype': event_types}
         # Events
-        ev_vars = {ct.EVENT_RACE: 'showraces', ct.EVENT_QUALY: 'showquals',
-                   ct.EVENT_PRACTICE: 'showops', ct.EVENT_TTRIAL: 'showtts'}
         if event_types == ct.ALL:
-            event_types = (ct.EVENT_RACE, ct.EVENT_QUALY, ct.EVENT_PRACTICE,
-                           ct.EVENT_TTRIAL)
+            event_types = [ct.EVENT_RACE, ct.EVENT_QUALY,
+                ct.EVENT_PRACTICE, ct.EVENT_TTRIAL]
+            data['evttype'] = event_types
 
-        for v in event_types:
-            data[ev_vars[v]] = 1
-        # Official, unofficial
-        if official == ct.ALL:
-            data['showofficial'] = 1
-            data['showunoofficial'] = 1
-        else:
-            if ct.EVENT_UNOFFICIAL in official:
-                data['showunofficial'] = 1
-            if ct.EVENT_OFFICIAL in official:
-                data['showofficial'] = 1
+        # Category
+        if category_type == ct.ALL:
+            category_type = [ct.RACE_TYPE_OVAL, ct.RACE_TYPE_ROAD,
+                ct.RACE_TYPE_DIRT_OVAL, ct.RACE_TYPE_DIRT_ROAD]
+            data['catid'] = category_type
 
         # Season
         if date_range == ct.ALL:
@@ -362,17 +347,10 @@ class iRWebStats:
             data['starttime_low'] = tc(date_range[0])  # multiplied by 1000
             data['starttime_high'] = tc(date_range[1])
 
-        # License levels
-        lic_vars = {ct.LIC_ROOKIE: 'showrookie', ct.LIC_A: 'showclassa',
-                    ct.LIC_B: 'showclassb', ct.LIC_C: 'showclassc',
-                    ct.LIC_D: 'showclassd', ct.LIC_PRO: 'showpro',
-                    ct.LIC_PRO_WC: 'showprowc'}
+        # Series
+        if series is not ct.ALL:
+            data.add(series)
 
-        if license_level == ct.ALL:
-            license_level = (ct.LIC_ROOKIE, ct.LIC_A, ct.LIC_B, ct.LIC_C,
-                             ct.LIC_D, ct.LIC_PRO, ct.LIC_PRO_WC)
-        for v in license_level:
-            data[lic_vars[v]] = 1
         r = self.__req(ct.URL_RESULTS_ARCHIVE, data=data,
                        cookie=self.last_cookie)
         res = parse(r)
