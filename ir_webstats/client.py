@@ -376,14 +376,12 @@ class iRWebStats:
         r = self.__req(ct.URL_RESULTS_ARCHIVE, data=data,
                        cookie=self.last_cookie)
         res = parse(r)
-        total_results, results = 0, []
+        header, results, total_results = [], [], 0
         if len(res['d']):
-            total_results = res['d']['46']
-            results = res['d']['r']
+            total_results = len(res['d'])
+            results = res['d']
             header = res['m']
-            results = format_results(results, header)
-
-        return results, total_results
+        return header, results, total_results
 
     @logged_in
     def all_seasons(self):
