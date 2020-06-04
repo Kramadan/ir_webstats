@@ -14,13 +14,12 @@ def tofile(data):
     a.write(data)
     a.close()
 
-
-def format_results(results, header):
+def format_results(results, header, opt_header=None):
     newres = []
+    if(opt_header is not None):
+        header = {k:v for k,v in header.items() if k in opt_header}
     for row in results:
-        newr = {}
-        for k, v in row.items():
-            newr[header[k]] = v
+        newr = {header[k]:v for k, v in row.items() if k in header}
         newres.append(newr)
     return newres
 
