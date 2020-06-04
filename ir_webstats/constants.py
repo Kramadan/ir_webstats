@@ -50,7 +50,7 @@ URL_PERSONAL_BEST = 'https://members.iracing.com/memberstats/member/GetPersonalB
 URL_DRIVER_STATUS = 'https://members.iracing.com/membersite/member/GetDriverStatus?%s'
 URL_DRIVER_STATS = 'https://members.iracing.com/memberstats/member/GetDriverStats'
 URL_LASTRACE_STATS = 'https://members.iracing.com/memberstats/member/GetLastRacesStats?custid=%s'
-URL_RESULTS_ARCHIVE = 'https://members.iracing.com/memberstats/member/GetResults'
+URL_RESULTS_ARCHIVE = 'https://members.iracing.com/memberstats/member/SearchSeriesResults'
 URL_SEASON_STANDINGS = 'https://members.iracing.com/memberstats/member/GetSeasonStandings'
 URL_SEASON_STANDINGS2 = 'https://members.iracing.com/membersite/member/statsseries.jsp'
 URL_HOSTED_RESULTS = 'https://members.iracing.com/memberstats/member/GetPrivateSessionResults'
