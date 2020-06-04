@@ -10,3 +10,4 @@ __pycache__
 *.tmp
 .vscode
 examples.py
+credentials.json
